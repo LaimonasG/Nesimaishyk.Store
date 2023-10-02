@@ -49,11 +49,11 @@ export async function createCart():Promise<ShoppingCart>{
 
   if(session){
 newCart=await prisma.cart.create({
-  data:{userId:session.user.id}
+  data:{userId:session.user.id,orderState:"created",}
 })
   } else{
      newCart=await prisma.cart.create({
-      data:{}
+      data:{orderState:"created"}
     })   
   }
 
@@ -107,6 +107,7 @@ await tx.cart.update({
 await tx.cart.create({
   data:{
     userId,
+    orderState:"created",
     items:{
       createMany:{
         data:localCart.items.map(item=>({

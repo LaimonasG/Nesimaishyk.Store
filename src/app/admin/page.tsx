@@ -5,15 +5,19 @@ import { Metadata } from "next"
 import { useSession } from "next-auth/react"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../api/auth/[...nextauth]/route"
+import CartTable from "./cartTable"
+import { setCartState } from "../cart/actions"
 
-interface AdminPageProps {
-  params: {
-    id: string
-  }
-}
 
-export default async function AdminPage({ params: { id } }: AdminPageProps) {
+export default async function AdminPage() {
   "use server";
+
+  const carts = await prisma.cart.findMany({
+    orderBy: { orderState: "desc" },
+    include: { items: { include: { product: true } } }
+  })
+
+  const users = await prisma.user.findMany();
 
   try {
     const session = await getServerSession(authOptions);
@@ -24,7 +28,7 @@ export default async function AdminPage({ params: { id } }: AdminPageProps) {
       if (user && user.isAdmin == "1") {
         return (
           <div>
-            paejogggggggggggg
+            <CartTable carts={carts} users={users} setCartState={setCartState} />
           </div>
         );
       }

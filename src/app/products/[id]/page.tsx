@@ -14,7 +14,7 @@ interface ProductPageProps {
 }
 
 const getProduct = cache(async (id: string) => {
-  const product = await prisma.products.findUnique({ where: { id } })
+  const product = await prisma.product.findUnique({ where: { id } })
   if (!product)
     notFound();
   return product;

@@ -25,7 +25,7 @@ export default function CartEntry({ cartItem: { product, quantity }, setProductQ
     <div>
       <div className="flex flex-wrap items-center gap-3">
         <Image
-          src={product.imageUrl}
+          src={product.imageUrls[0]}
           alt={product.name}
           width={200}
           height={200}
