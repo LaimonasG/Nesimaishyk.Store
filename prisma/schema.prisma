@@ -10,7 +10,7 @@ datasource db {
 model Product {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   description String
-  imageUrl    String
+  imageUrls    String[]
   name        String
   price       Int
   createdAt DateTime @default(now())
@@ -78,6 +78,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  isAdmin       String
   accounts      Account[]
   sessions      Session[]
   Cart          Cart[]

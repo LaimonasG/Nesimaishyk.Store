@@ -32,7 +32,7 @@ export default async function Home({ searchParams: { page = "1" } }: HomeProps) 
           {products.length > 0 &&
             <div className='hero-content flex-col lg:flex-row'>
               <Image
-                src={products[0].imageUrl}
+                src={products[0].imageUrls[0]}
                 alt={products[0].name}
                 height={800}
                 width={400}

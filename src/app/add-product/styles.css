@@ -1,0 +1,6 @@
+.file-input-common {
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 300px; /* Adjust as needed */
+  /* Add other common styles here */
+}
