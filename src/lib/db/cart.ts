@@ -1,8 +1,8 @@
 import { prisma } from "../prisma";
-import {cookies} from "next/dist/client/components/headers"
 import {Cart,CartItem,Prisma} from"@prisma/client"
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import secureLocalStorage from "react-secure-storage";
 
 export type CartWithProducts=Prisma.CartGetPayload<{ include: {items: {include:{product:true}}}}>
 
@@ -24,7 +24,7 @@ export async function getCart():Promise<ShoppingCart | null>{
       cart=await prisma.cart.findFirst({where:{userId:session.user.id},include: {items: {include:{product:true}}}} 
   )
   } else{
-    const localCartId=cookies().get("localCartId")?.value;
+    const localCartId=secureLocalStorage.getItem('localCartId') as string;
     cart=localCartId ? 
     await prisma.cart.findUnique({
       where:{id:localCartId},
@@ -49,7 +49,7 @@ export async function createCart():Promise<ShoppingCart>{
 
   if(session){
 newCart=await prisma.cart.create({
-  data:{userId:session.user.id,orderState:"created",}
+  data:{userId:session.user.id,orderState:"created"}
 })
   } else{
      newCart=await prisma.cart.create({
@@ -57,8 +57,7 @@ newCart=await prisma.cart.create({
     })   
   }
 
-  //needs encryption + secure settings
-  cookies().set("localCartId",newCart.id)
+  secureLocalStorage.setItem('localCartId',newCart.id);
 
   return {
     ...newCart,
@@ -69,7 +68,7 @@ newCart=await prisma.cart.create({
 }
 
 export async function mergeAnynymousCartToUserCart(userId:string){
-  const localCartId=cookies().get("localCartId")?.value;
+  const localCartId=secureLocalStorage.getItem('localCartId') as string
 
   const localCart=localCartId ? 
   await prisma.cart.findUnique({
@@ -124,7 +123,7 @@ await tx.cart.delete({
   where:{id:localCart.id}
 })
 
-cookies().set("localCartId","");
+secureLocalStorage.setItem('localCartId','');
 })
 }
 
@@ -140,4 +139,15 @@ function mergeCartItems(...cartItems:CartItem[][]){
     });
     return acc;
   }, [] as CartItem[])
+}
+
+
+
+
+export async function deleteStateCarts(state:string){  
+  await prisma.cart.deleteMany({where:{orderState:state}})
+}
+
+export async function deleteSelectedCart(cartId:string){  
+  await prisma.cart.delete({where:{id:cartId}})
 }

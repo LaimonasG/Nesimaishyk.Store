@@ -41,7 +41,7 @@ export default function CartTable({ carts, users, setCartState }: CartTableProps
                 {item.id}
               </td>
               <td className="px-4 py-2 text-center">
-                {users.find((user) => user.id === item.userId)?.name}
+                {users.find((user) => user.id === item.userId)?.name || "Anonymous"}
               </td>
               <td className="px-4 py-2">
                 <div className="relative flex justify-center items-center">
