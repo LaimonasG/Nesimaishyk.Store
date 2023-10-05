@@ -2,7 +2,9 @@ This is a Next.js project, using:
 -typescript  
 -tailwindcss  
 -daisyui components  
--mongodb  
+-mongodb  (data storage)
+-google auth
+-aws cloud (image storage)
 
 The project is deployed on Vercel, URL: "https://nesimaishyk-store.vercel.app/"  
 
