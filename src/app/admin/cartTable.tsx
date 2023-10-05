@@ -10,7 +10,7 @@ interface CartTableProps {
 }
 
 export default function CartTable({ carts, users, setCartState }: CartTableProps) {
-  const stateValues = ["created", "paid", "paid confirmed", "delivered"];
+  const stateValues = ["created", "paid", "paid confirmed", "delivered", "canceled"];
 
   const stateOptions = stateValues.map((state, index) => (
     <option value={state} key={index}>
@@ -20,15 +20,15 @@ export default function CartTable({ carts, users, setCartState }: CartTableProps
 
   return (
     <div className="overflow-x-auto">
-      <table className="table-auto w-full mb-40">
+      <table className="table-auto w-full mb-3 text-white">
         <thead>
           <tr>
             <th className="px-4 py-2">No.</th>
+            <th className="px-4 py-2">Order No.</th>
             <th className="px-4 py-2">User</th>
             <th className="px-4 py-2">Cart Items</th>
             <th className="px-4 py-2">Total</th>
             <th className="px-4 py-2">Order state</th>
-            <th className="px-4 py-2"></th>
           </tr>
         </thead>
         <tbody>
@@ -37,20 +37,27 @@ export default function CartTable({ carts, users, setCartState }: CartTableProps
               <td className="px-4 py-2 text-center align-middle">
                 {index + 1}
               </td>
+              <td className="px-4 py-2 text-center align-middle">
+                {item.id}
+              </td>
               <td className="px-4 py-2 text-center">
                 {users.find((user) => user.id === item.userId)?.name}
               </td>
               <td className="px-4 py-2">
                 <div className="relative flex justify-center items-center">
                   <details className="dropdown">
-                    <summary className="pl-5 btn">Item count: {item.items.reduce((acc, item) => acc + item.quantity, 0)}</summary>
-                    <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
-                      {item.items.map((cartItem, cartIndex) => (
-                        <li key={cartItem.id}>
-                          {cartItem.product.name} - ({cartItem.quantity})
-                        </li>
-                      ))}
-                    </ul>
+                    <summary className={`pl-5 btn btn-active btn-ghost ${item.items.length === 0 ? 'disabled' : ''}`}>
+                      Item count: {item.items.reduce((acc, item) => acc + item.quantity, 0)}
+                    </summary>
+                    {item.items.length > 0 && (
+                      <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+                        {item.items.map((cartItem, cartIndex) => (
+                          <li key={cartItem.id}>
+                            {cartItem.product.name} - ({cartItem.quantity})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </details>
                 </div>
               </td>
@@ -61,7 +68,7 @@ export default function CartTable({ carts, users, setCartState }: CartTableProps
                   0
                 )} €
               </td>
-              <td className="px-4 py-2 text-center">
+              <td className="px-4 py-2 text-center text-black">
                 <div className="relative flex justify-center items-center">
                   <select
                     className="select select-bordered w-full max-w-[120px]"

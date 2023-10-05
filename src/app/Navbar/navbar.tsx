@@ -23,7 +23,9 @@ export default async function Navbar() {
   const cart = await getCart();
   const session = await getServerSession(authOptions);
   const user = await prisma.user.findFirst({ where: { id: session?.user.id } });
-  console.log("useris; ", user)
+  const isAdminUser = user?.isAdmin === "1";
+  const isSignedIn = !!session;
+
   return (
     <div className="bg-base-100">
       <div className="navbar max-w-7xl m-auto flex-col sm:flex-row gap-2">
@@ -33,7 +35,7 @@ export default async function Navbar() {
             Nesimaishyk
           </Link>
         </div>
-        {user && <AdminButton user={user} />}
+        {isSignedIn && isAdminUser && <AdminButton user={user} />}
         <div className="flex-none gap-2">
           <form action={searchProducts}>
             <div className="form-control">

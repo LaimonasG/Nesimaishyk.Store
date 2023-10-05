@@ -27,9 +27,17 @@ export default async function AdminPage() {
       const user = await prisma.user.findFirst({ where: { id: session?.user.id } });
       if (user && user.isAdmin == "1") {
         return (
-          <div>
-            <CartTable carts={carts} users={users} setCartState={setCartState} />
+          <div className="flex flex-col w-full border-opacity-50">
+            <div className="divider mb-10">
+              <h1 className="text-3xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)' }}>
+                Carts
+              </h1>
+            </div>
+            <div className="bg-neutral rounded-lg shadow-md p-4">
+              <CartTable carts={carts} users={users} setCartState={setCartState} />
+            </div>
           </div>
+
         );
       }
     }
