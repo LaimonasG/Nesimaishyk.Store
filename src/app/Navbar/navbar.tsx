@@ -3,7 +3,7 @@ import logo from "../../assets/logo.jpg"
 import Image from "next/image"
 import { redirect } from "next/navigation";
 import { getCart } from "@/lib/db/cart";
-import ShoppingCartButton from "./ShoppingCartButton";
+import ShoppingCartButton from "./shoppingCartButton";
 import UserMenuButton from "./UserMenuButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";

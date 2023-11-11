@@ -3,6 +3,7 @@ import {Cart,CartItem,Prisma} from"@prisma/client"
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import secureLocalStorage from "react-secure-storage";
+import {cookies} from "next/dist/client/components/headers"
 
 export type CartWithProducts=Prisma.CartGetPayload<{ include: {items: {include:{product:true}}}}>
 
@@ -24,7 +25,7 @@ export async function getCart():Promise<ShoppingCart | null>{
       cart=await prisma.cart.findFirst({where:{userId:session.user.id},include: {items: {include:{product:true}}}} 
   )
   } else{
-    const localCartId=secureLocalStorage.getItem('localCartId') as string;
+    const localCartId=cookies().get('localCartId')?.value
     cart=localCartId ? 
     await prisma.cart.findUnique({
       where:{id:localCartId},
@@ -57,7 +58,7 @@ newCart=await prisma.cart.create({
     })   
   }
 
-  secureLocalStorage.setItem('localCartId',newCart.id);
+  cookies().set('localCartId',newCart.id);
 
   return {
     ...newCart,
@@ -68,7 +69,7 @@ newCart=await prisma.cart.create({
 }
 
 export async function mergeAnynymousCartToUserCart(userId:string){
-  const localCartId=secureLocalStorage.getItem('localCartId') as string
+  const localCartId=cookies().get('localCartId')?.value
 
   const localCart=localCartId ? 
   await prisma.cart.findUnique({
@@ -123,7 +124,7 @@ await tx.cart.delete({
   where:{id:localCart.id}
 })
 
-secureLocalStorage.setItem('localCartId','');
+cookies().set('localCartId','');
 })
 }
 
@@ -140,9 +141,6 @@ function mergeCartItems(...cartItems:CartItem[][]){
     return acc;
   }, [] as CartItem[])
 }
-
-
-
 
 export async function deleteStateCarts(state:string){  
   await prisma.cart.deleteMany({where:{orderState:state}})
